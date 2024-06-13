@@ -1,19 +1,12 @@
-package car
+package brand
 
 type Service interface {
-	Create() error
 }
+
 type service struct {
 	repository Repository
 }
 
 func NewService(repository Repository) Service {
-	return &service{
-		repository: repository,
-	}
-}
-
-func (c *service) Create() error {
-
-	return nil
+	return &service{repository: repository}
 }

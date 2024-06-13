@@ -3,6 +3,9 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/nicktoon21/go-store-cars/cmd/handler"
+	"github.com/nicktoon21/go-store-cars/internal/car"
 )
 
 type Router interface {
@@ -23,5 +26,18 @@ func NewRouter(eng *gin.Engine, db *pgxpool.Pool) Router {
 }
 
 func (r *router) MapRoutes() {
+	r.setGroup()
+	r.createCarRoutes()
+}
+
+func (r *router) setGroup() {
 	r.rg = r.eng.Group("")
+}
+
+func (r *router) createCarRoutes() {
+	repository := car.NewRepository(r.db)
+	service := car.NewService(repository)
+	handler := handler.NewCarController(service)
+
+	r.rg.POST("/car", handler.Create())
 }

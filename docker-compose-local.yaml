@@ -14,7 +14,11 @@ services:
     volumes:
       - ./ddl.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "sh -c 'pg_isready -U admin -d app_database'"]
+      test:
+        [
+          "CMD-SHELL",
+          "sh -c 'pg_isready -U admin -d app_database'"
+        ]
       interval: 5s
       timeout: 5s
       retries: 20
