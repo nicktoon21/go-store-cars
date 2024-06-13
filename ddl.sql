@@ -1,0 +1,34 @@
+CREATE TEXT SEARCH CONFIGURATION BUSCA (COPY = portuguese);
+ALTER TEXT SEARCH CONFIGURATION BUSCA ALTER MAPPING FOR hword, hword_part, word WITH portuguese_stem;
+
+ALTER SYSTEM SET max_connections = 1000;
+
+ALTER DATABASE app_database set synchronous_commit=OFF;
+
+-- Tabela de Marcas (Brand)
+CREATE TABLE Brand (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- Tabela de Modelos (Model)
+CREATE TABLE Model (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- Tabela de Carros (Car)
+CREATE TABLE Car (
+    ID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Color VARCHAR(50) NOT NULL,
+    BrandID INTEGER NOT NULL,
+    ModelID INTEGER NOT NULL,
+    FOREIGN KEY (BrandID) REFERENCES Brand(ID) ON DELETE CASCADE,
+    FOREIGN KEY (ModelID) REFERENCES Model(ID) ON DELETE CASCADE,
+    INDEX (BrandID),
+    INDEX (ModelID)
+);
+
+
+CREATE EXTENSION PG_TRGM;
