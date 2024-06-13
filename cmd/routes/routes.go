@@ -5,7 +5,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/nicktoon21/go-store-cars/cmd/handler"
+	"github.com/nicktoon21/go-store-cars/internal/brand"
 	"github.com/nicktoon21/go-store-cars/internal/car"
+	"github.com/nicktoon21/go-store-cars/internal/model"
 )
 
 type Router interface {
@@ -28,6 +30,8 @@ func NewRouter(eng *gin.Engine, db *pgxpool.Pool) Router {
 func (r *router) MapRoutes() {
 	r.setGroup()
 	r.createCarRoutes()
+	r.createBrandRoutes()
+	r.createModelRoutes()
 }
 
 func (r *router) setGroup() {
@@ -40,4 +44,20 @@ func (r *router) createCarRoutes() {
 	handler := handler.NewCarController(service)
 
 	r.rg.POST("/car", handler.Create())
+}
+
+func (r *router) createBrandRoutes() {
+	repository := brand.NewRepository(r.db)
+	service := brand.NewService(repository)
+	handler := handler.NewBrandController(service)
+
+	r.rg.POST("/brand", handler.Create())
+}
+
+func (r *router) createModelRoutes() {
+	repository := model.NewRepository(r.db)
+	service := model.NewService(repository)
+	handler := handler.NewModelController(service)
+
+	r.rg.POST("/model", handler.Create())
 }
